@@ -1,8 +1,8 @@
 # 🗺️ Tilemap Pathfinding Game
 
-This project is based on **Unity Week 5: Two-dimensional Scene-building and Path-finding**. It demonstrates how to construct a 2D scene using tilemaps and implements path-finding using both **BFS** and **Dijkstra's algorithm**. 
+This project demonstrates 2D scene construction using tilemaps and pathfinding algorithms in Unity. It builds on concepts from **Unity Week 5: Two-dimensional Scene-building and Pathfinding**, incorporating both **BFS** and **Dijkstra's algorithm** for navigation.
 
-📖 **Text explanations** for the foundational concepts are available [here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
+📖 **Foundational text explanations** are available [here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
 
 ---
 
@@ -38,24 +38,24 @@ This project is based on **Unity Week 5: Two-dimensional Scene-building and Path
 ```csharp
 void Awake()
 {
-    // Initialize with only grass and swamp as allowed tiles
-    allowedTileList = new List<TileBase> { grassTile, swampTile };
-    Debug.Log("Initial allowed tiles: " + string.Join(", ", allowedTileList));
+    InitializeAllowedTiles();
+}
+
+private void InitializeAllowedTiles()
+{
+    allowedTileSet = new HashSet<TileBase>(defaultAllowedTiles);
+    Debug.Log("Initial allowed tiles: " + string.Join(", ", allowedTileSet));
 }
 
 public void AddTile(TileBase tile)
 {
-    if (!allowedTileList.Contains(tile))
+    if (tile != null && !allowedTileSet.Contains(tile))
     {
-        allowedTileList.Add(tile);
+        allowedTileSet.Add(tile);
         Debug.Log($"Tile '{tile.name}' added to allowed tiles.");
     }
 }
 ```
-
-- **Highlights**: 
-  - Starts with **grass** and **swamp** as valid movement tiles.
-  - Updates dynamically when power-ups are collected.
 
 ---
 
@@ -68,16 +68,18 @@ switch (tileName)
 {
     case "BoatTile":
         allowedTiles.AddTile(TileManager.Instance.GetDeepSeaTile());
-        allowedTiles.AddTile(TileManager.Instance.GetMediumSeaTile());
         Debug.Log("Boat collected! You can now sail on water.");
         break;
+
     case "GoatTile":
         allowedTiles.AddTile(TileManager.Instance.GetMountainTile());
         Debug.Log("Goat collected! Mountains are now passable.");
         break;
+
     case "PickaxeTile":
         PlayerInteraction.Instance.EnableTileModification(
-            TileManager.Instance.GetMountainTile(), TileManager.Instance.GetGrassTile()
+            TileManager.Instance.GetMountainTile(),
+            TileManager.Instance.GetGrassTile()
         );
         Debug.Log("Pickaxe collected! You can now transform mountains into grass.");
         break;
@@ -86,31 +88,33 @@ switch (tileName)
 
 ---
 
-### **3. StartGameManager** 🖼️
+### **3. TilemapGraph** 🔗
 
-**Purpose**: Manages the start and game-over states, including transitions between scenes.
+**Purpose**: Represents the tilemap as a graph for pathfinding. Provides neighbors and edge weights for Dijkstra's Algorithm.
 
 ```csharp
-public void ShowGameOver(string message)
+public float GetEdgeWeight(Vector3Int from, Vector3Int to)
 {
-    if (gameOverPanel != null)
+    TileBase tile = tilemap.GetTile(to);
+    if (tile != null && tileWeights.ContainsKey(tile))
     {
-        gameOverPanel.SetActive(true);
-
-        if (gameOverText != null)
-        {
-            gameOverText.text = message; // Display the specific Game Over message
-        }
+        return tileWeights[tile];
     }
+    return float.MaxValue; // Treat unknown tiles as impassable
+}
 
-    Time.timeScale = 0; // Pause the game
-    StartCoroutine(WaitAndLoadNextScene());
+public IEnumerable<Vector3Int> Neighbors(Vector3Int node)
+{
+    foreach (var direction in directions)
+    {
+        Vector3Int neighborPos = node + direction;
+        TileBase neighborTile = tilemap.GetTile(neighborPos);
+
+        if (neighborTile != null)
+            yield return neighborPos;
+    }
 }
 ```
-
-- **Highlights**:
-  - Displays a specific **Game Over** message when the player steps on an invalid tile.
-  - Automatically transitions to the next scene after a delay.
 
 ---
 
@@ -130,13 +134,40 @@ public static List<NodeType> GetPath<NodeType>(
     var distances = new Dictionary<NodeType, float>();
     var previousNodes = new Dictionary<NodeType, NodeType>();
     var visited = new HashSet<NodeType>();
-    // ... Implementation continues
+    // Implementation continues
 }
 ```
 
-- **Highlights**:
-  - Implements **Dijkstra’s algorithm** to find the least-cost path in a weighted graph.
-  - Uses the `TilemapGraph` to represent the tilemap.
+---
+
+### **5. TargetMover** 🎯
+
+**Purpose**: Handles click-based movement on the tilemap. Ensures that clicks are valid and calculates the least-cost path to the target using Dijkstra's Algorithm.
+
+```csharp
+public void SetTarget(Vector3 newTarget)
+{
+    Vector3Int gridPosition = tilemap.WorldToCell(newTarget);
+
+    if (!tilemap.HasTile(gridPosition))
+    {
+        Debug.LogWarning("Invalid Target: Clicked outside the tilemap.");
+        return;
+    }
+
+    if (gridPosition == tilemap.WorldToCell(transform.position))
+    {
+        Debug.LogWarning("Invalid Target: You are already on this tile.");
+        return;
+    }
+
+    targetInWorld = tilemap.GetCellCenterWorld(gridPosition);
+    targetInGrid = gridPosition;
+    atTarget = false;
+
+    StartCoroutine(MoveTowardsTheTarget());
+}
+```
 
 ---
 
@@ -145,9 +176,9 @@ public static List<NodeType> GetPath<NodeType>(
 ### **Part 1: Tilemap Movement**
 1. Use the **arrow keys** to move the player.
 2. Collect items to unlock movement across specific tiles:
-   - **Boat**: Sail on water.
-   - **Goat**: Climb mountains.
-   - **Pickaxe**: Transform mountains into grass.
+   - 🛶 **Boat**: Sail on water.
+   - 🐐 **Goat**: Climb mountains.
+   - ⛏️ **Pickaxe**: Transform mountains into grass.
 3. Step on an invalid tile to transition to the next part.
 
 ### **Part 2: Dijkstra Navigation**
