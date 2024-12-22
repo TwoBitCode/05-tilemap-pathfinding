@@ -1,28 +1,28 @@
-# Tilemap Pathfinding Game
+# 🗺️ Tilemap Pathfinding Game
 
 This project is based on **Unity Week 5: Two-dimensional Scene-building and Path-finding**. It demonstrates how to construct a 2D scene using tilemaps and implements path-finding using both **BFS** and **Dijkstra's algorithm**. 
 
-Text explanations for the foundational concepts are available [here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
+📖 **Text explanations** for the foundational concepts are available [here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
 
 ---
 
 ## 🕹️ Gameplay Overview
 
 ### **Part 1: Tilemap Movement with Helpers**
-- **Goal**: Navigate the tilemap and collect items to unlock movement on specific tiles.
-- **Power-Ups**:
-  - **Boat**: Allows movement across water tiles.
-  - **Goat**: Enables traversal of mountain tiles.
-  - **Pickaxe**: Transforms mountain tiles into grass.
-- **Rules**:
+- **🎯 Goal**: Navigate the tilemap and collect items to unlock movement on specific tiles.
+- **🛠️ Power-Ups**:
+  - 🛶 **Boat**: Allows movement across water tiles.
+  - 🐐 **Goat**: Enables traversal of mountain tiles.
+  - ⛏️ **Pickaxe**: Transforms mountain tiles into grass.
+- **⚠️ Rules**:
   - Without power-ups, the player can only walk on **grass** and **swamp** tiles.
   - Stepping on an invalid tile ends the game and transitions to the next part.
 
 ---
 
 ### **Part 2: Click-Based Movement with Dijkstra**
-- **Goal**: Click on a valid target tile to navigate the map using the fastest path.
-- **Features**:
+- **🎯 Goal**: Click on a valid target tile to navigate the map using the fastest path.
+- **🛠️ Features**:
   - Each tile type has a specific movement cost.
   - The game uses **Dijkstra’s algorithm** to calculate the least-cost path.
   - Invalid clicks display a warning but do not end the game.
@@ -31,7 +31,7 @@ Text explanations for the foundational concepts are available [here](https://git
 
 ## 🛠️ Code Architecture
 
-### **1. AllowedTiles**
+### **1. AllowedTiles** 🟩
 
 **Purpose**: Manages the tiles the player is allowed to walk on.
 
@@ -59,7 +59,7 @@ public void AddTile(TileBase tile)
 
 ---
 
-### **2. ItemTileDetector**
+### **2. ItemTileDetector** 🎯
 
 **Purpose**: Detects when the player interacts with item tiles and updates allowed movement.
 
@@ -86,7 +86,7 @@ switch (tileName)
 
 ---
 
-### **3. StartGameManager**
+### **3. StartGameManager** 🖼️
 
 **Purpose**: Manages the start and game-over states, including transitions between scenes.
 
@@ -114,7 +114,7 @@ public void ShowGameOver(string message)
 
 ---
 
-### **4. Dijkstra Algorithm Integration**
+### **4. Dijkstra Algorithm Integration** 📈
 
 **Purpose**: Calculates the least-cost path for click-based navigation.
 
