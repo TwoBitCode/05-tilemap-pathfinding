@@ -6,6 +6,10 @@ This project demonstrates 2D scene construction using tilemaps and pathfinding a
 
 ---
 
+### Play the Game on Itch.io
+You can play the game directly from our [Itch.io page](https://twobitcode.itch.io/05-tilemap-pathfinding).
+
+
 ## 🕹️ Gameplay Overview
 
 ### **Part 1: Tilemap Movement with Helpers**
