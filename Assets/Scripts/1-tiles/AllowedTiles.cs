@@ -1,17 +1,44 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-/**
- * This component just keeps a list of allowed tiles.
- * Such a list is used both for pathfinding and for movement.
- */
-public class AllowedTiles : MonoBehaviour  {
-    [SerializeField] TileBase[] allowedTiles = null;
+public class AllowedTiles : MonoBehaviour
+{
+    [Header("Initial Allowed Tiles")]
+    [SerializeField] private TileBase[] defaultAllowedTiles = null;
 
-    public bool Contains(TileBase tile) {
-        return allowedTiles.Contains(tile);
+    private List<TileBase> allowedTileList;
+
+    void Awake()
+    {
+        // Initialize the allowedTileList with the default tiles
+        allowedTileList = new List<TileBase>(defaultAllowedTiles);
+        Debug.Log("Initial allowed tiles: " + string.Join(", ", allowedTileList));
     }
 
-    public TileBase[] Get() { return allowedTiles;  }
+    public bool Contains(TileBase tile)
+    {
+        return allowedTileList.Contains(tile);
+    }
+
+    public void AddTile(TileBase tile)
+    {
+        if (!allowedTileList.Contains(tile))
+        {
+            allowedTileList.Add(tile);
+            Debug.Log($"Tile '{tile.name}' added to allowed tiles.");
+        }
+    }
+
+    public void ResetToDefault()
+    {
+        // Reset to the default allowed tiles
+        allowedTileList = new List<TileBase>(defaultAllowedTiles);
+        Debug.Log("Allowed tiles reset to default.");
+    }
+
+    public TileBase[] Get()
+    {
+        return allowedTileList.ToArray();
+    }
 }
