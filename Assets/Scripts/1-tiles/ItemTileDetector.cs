@@ -35,6 +35,9 @@ public class ItemTileDetector : MonoBehaviour
                     allowedTiles.AddTile(TileManager.Instance.GetMediumSeaTile()); // Add medium sea tiles
                     Debug.Log("Boat collected! You can now sail on medium sea and deep sea.");
                     currentHelper = "Boat";
+
+                    // Disable tile modification behavior for Pickaxe
+                    PlayerInteraction.Instance.DisableTileModification();
                 }
                 break;
 
@@ -45,6 +48,9 @@ public class ItemTileDetector : MonoBehaviour
                     allowedTiles.AddTile(TileManager.Instance.GetMountainTile()); // Add mountain tiles
                     Debug.Log("Goat collected! Mountains are now passable.");
                     currentHelper = "Goat";
+
+                    // Disable tile modification behavior for Pickaxe
+                    PlayerInteraction.Instance.DisableTileModification();
                 }
                 break;
 

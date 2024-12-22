@@ -1,18 +1,12 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 
-/**
- * This component allows the player to move by clicking the arrow keys,
- * but only if the new position is on an allowed tile. If the player steps
- * on a disallowed tile, the game ends and a "Game Over" message is displayed.
- */
-public class KeyboardMoverByTile : KeyboardMover
+public class KeyboardMoverByTile : MonoBehaviour
 {
-    [SerializeField] Tilemap tilemap = null;
-    [SerializeField] AllowedTiles allowedTiles = null;
-    [SerializeField] GameObject gameOverPanel = null; // Reference to the Game Over UI Panel
+    [SerializeField] private Tilemap tilemap = null;
+    [SerializeField] private AllowedTiles allowedTiles = null;
+    [SerializeField] private StartGameManager gameManager; // Reference to GameManager
+    private bool isGameOver = false; // Flag to track game state
 
     private TileBase TileOnPosition(Vector3 worldPosition)
     {
@@ -22,31 +16,45 @@ public class KeyboardMoverByTile : KeyboardMover
 
     void Update()
     {
-        if (gameOverPanel.activeSelf) return; // Stop movement after Game Over
+        if (isGameOver) return; // Prevent further movement if the game is over
 
-        Vector3 newPosition = NewPosition();
+        Vector3 newPosition = transform.position + NewPosition();
         TileBase tileOnNewPosition = TileOnPosition(newPosition);
-
-        if (tileOnNewPosition == null)
-        {
-            Debug.LogError("No tile detected under the new position!");
-            return;
-        }
 
         if (allowedTiles.Contains(tileOnNewPosition))
         {
-            transform.position = newPosition; // Move the player
+            transform.position = newPosition;
         }
-        else
+        else if (tileOnNewPosition != null) // Trigger game over for invalid tiles
         {
-            Debug.LogError($"Game Over! You cannot walk on {tileOnNewPosition.name}.");
-            TriggerGameOver(); // Trigger Game Over logic
+            string tileName = tileOnNewPosition?.name ?? "unknown tile";
+            Debug.Log($"Game Over! You cannot walk on {tileName}.");
+            isGameOver = true;
+            gameManager.ShowGameOver($"Game Over! You stepped on an invalid tile: {tileName}.");
         }
     }
 
-    private void TriggerGameOver()
+    private Vector3 NewPosition()
     {
-        Debug.Log("Game Over!");
-        gameOverPanel.SetActive(true); // Display the Game Over Panel
+        Vector3 offset = Vector3.zero;
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            offset = Vector3.up;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            offset = Vector3.down;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            offset = Vector3.left;
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            offset = Vector3.right;
+        }
+
+        return offset;
     }
 }

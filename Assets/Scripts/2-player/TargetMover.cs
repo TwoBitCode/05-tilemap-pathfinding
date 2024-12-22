@@ -1,38 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
-/**
- * This component moves its object towards a given target position.
- */
 public class TargetMover : MonoBehaviour
 {
-    [SerializeField] Tilemap tilemap = null;
-    [SerializeField] AllowedTiles allowedTiles = null;
+    [SerializeField] private Tilemap tilemap = null;
+    [SerializeField] private AllowedTiles allowedTiles = null;
+    [SerializeField] private TileWeightConfig tileWeightConfig = null;
+    [SerializeField] private float speed = 2f;
+    [SerializeField] private int maxIterations = 1000;
+    [SerializeField] private UIMessageManager uiMessageManager;
 
-    [Tooltip("The speed by which the object moves towards the target, in meters (=grid units) per second")]
-    [SerializeField] float speed = 2f;
-
-    [Tooltip("Maximum number of iterations before BFS algorithm gives up on finding a path")]
-    [SerializeField] int maxIterations = 1000;
-
-    [Tooltip("The target position in world coordinates")]
-    [SerializeField] Vector3 targetInWorld;
-
-    [Tooltip("The target position in grid coordinates")]
-    [SerializeField] Vector3Int targetInGrid;
-
-    protected bool atTarget;  // This property is set to "true" whenever the object has already found the target.
+    private Vector3 targetInWorld;
+    private Vector3Int targetInGrid;
+    public bool atTarget = true;
+    private TilemapGraph tilemapGraph = null;
+    private float timeBetweenSteps;
+    private Dictionary<TileBase, float> tileWeights;
 
     public void SetTarget(Vector3 newTarget)
     {
-        if (targetInWorld != newTarget)
+
+
+        if (IsClickOverUI())
         {
-            targetInWorld = newTarget;
-            targetInGrid = tilemap.WorldToCell(targetInWorld);
-            atTarget = false;
+            Debug.Log("Click detected over UI. Ignoring...");
+            return;
         }
+
+        Vector3Int gridPosition = tilemap.WorldToCell(newTarget);
+
+        if (!tilemap.HasTile(gridPosition))
+        {
+            Debug.LogWarning("Invalid Target: Clicked outside the tilemap.");
+            return;
+        }
+
+        TileBase clickedTile = tilemap.GetTile(gridPosition);
+        if (!allowedTiles.Contains(clickedTile))
+        {
+            Debug.LogWarning($"Invalid Target: Tile '{clickedTile?.name}' is not allowed.");
+            return;
+        }
+
+        targetInWorld = tilemap.GetCellCenterWorld(gridPosition);
+        targetInGrid = gridPosition;
+        atTarget = false;
+
+        Debug.Log($"Valid target set to {gridPosition} ({clickedTile?.name}).");
+        StartCoroutine(MoveTowardsTheTarget());
     }
 
     public Vector3 GetTarget()
@@ -40,22 +58,40 @@ public class TargetMover : MonoBehaviour
         return targetInWorld;
     }
 
-    private TilemapGraph tilemapGraph = null;
-    private float timeBetweenSteps;
+
+    private bool IsClickOverUI()
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
 
     protected virtual void Start()
     {
-        tilemapGraph = new TilemapGraph(tilemap, allowedTiles.Get());
+        if (tileWeightConfig == null)
+        {
+            Debug.LogError("Tile Weight Config is missing! Please assign it in the Inspector.");
+            return;
+        }
+
+        tileWeights = tileWeightConfig.GetTileWeightsDictionary();
+
+        if (tileWeights == null || tileWeights.Count == 0)
+        {
+            Debug.LogError("Tile weights are empty or invalid! Please configure the Tile Weight Config.");
+            return;
+        }
+
+        tilemapGraph = new TilemapGraph(tilemap, allowedTiles.Get(), tileWeights);
         timeBetweenSteps = 1 / speed;
-        StartCoroutine(MoveTowardsTheTarget());
+
+        Debug.Log("TargetMover initialized and waiting for game start.");
     }
 
     IEnumerator MoveTowardsTheTarget()
     {
-        for (; ; )
+        while (!atTarget)
         {
             yield return new WaitForSeconds(timeBetweenSteps);
-            if (enabled && !atTarget)
+            if (!atTarget)
                 MakeOneStepTowardsTheTarget();
         }
     }
@@ -64,19 +100,29 @@ public class TargetMover : MonoBehaviour
     {
         Vector3Int startNode = tilemap.WorldToCell(transform.position);
         Vector3Int endNode = targetInGrid;
-        List<Vector3Int> shortestPath = BFS.GetPath(tilemapGraph, startNode, endNode, maxIterations);
-        Debug.Log("shortestPath = " + string.Join(" , ", shortestPath));
+
+        List<Vector3Int> shortestPath = Dijkstra.GetPath(
+            tilemapGraph,
+            startNode,
+            endNode,
+            tilemapGraph.GetEdgeWeight,
+            maxIterations
+        );
+
         if (shortestPath.Count >= 2)
-        { // shortestPath contains both source and target.
+        {
             Vector3Int nextNode = shortestPath[1];
             transform.position = tilemap.GetCellCenterWorld(nextNode);
+
+            if (nextNode == targetInGrid)
+            {
+                atTarget = true;
+                Debug.Log("Reached the target!");
+            }
         }
         else
         {
-            if (shortestPath.Count == 0)
-            {
-                Debug.LogError($"No path found between {startNode} and {endNode}");
-            }
+            Debug.LogError($"No path found between {startNode} and {endNode}");
             atTarget = true;
         }
     }

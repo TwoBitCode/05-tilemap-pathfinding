@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98331a32c5efe444fa8626496771600e, type: 3}
+  m_Name: TileWeightConfig
+  m_EditorClassIdentifier: 
+  tileWeights:
+  - tile: {fileID: 11400000, guid: 0cea26e1a47ac8d46850becac1a6c757, type: 2}
+    weight: 3
+  - tile: {fileID: 11400000, guid: 149fb7c95775bc842bc8f54055585274, type: 2}
+    weight: 1
+  - tile: {fileID: 11400000, guid: f632ced9123ae5c45b90b0717a7e4eae, type: 2}
+    weight: 4
+  - tile: {fileID: 11400000, guid: 2ad1759387b28444892c8549e6122652, type: 2}
+    weight: 5
+  - tile: {fileID: 11400000, guid: 8f2cab6dea1a2d147b231cc92eb1f7e2, type: 2}
+    weight: 2
+  - tile: {fileID: 11400000, guid: fbc7e53732751274190a9ea1250192b4, type: 2}
+    weight: 10
+  - tile: {fileID: 11400000, guid: 0230b48a2cd148149bf5502ca7328478, type: 2}
+    weight: 20
+  - tile: {fileID: 11400000, guid: ea56eece63aba35469fea812356c7a92, type: 2}
+    weight: 30
+  - tile: {fileID: 11400000, guid: 546c35550ead79941af5f505fdd175ec, type: 2}
+    weight: 10

@@ -6,10 +6,10 @@ public class PlayerInteraction : MonoBehaviour
     public static PlayerInteraction Instance;
 
     [SerializeField] private Tilemap tilemap;
+   
 
     private TileBase modifiableTile;
     private TileBase replacementTile;
-
     private Vector3Int lastTilePosition; // Tracks the last tile position the player was on
 
     private void Awake()
@@ -28,7 +28,14 @@ public class PlayerInteraction : MonoBehaviour
     {
         modifiableTile = modifiable;
         replacementTile = replacement;
-        Debug.Log($"Enabling modification: {modifiable.name} → {replacement.name}");
+        Debug.Log($"Enabling modification: {modifiable?.name} → {replacement?.name}");
+    }
+
+    public void DisableTileModification()
+    {
+        modifiableTile = null;
+        replacementTile = null;
+        Debug.Log("Tile modification disabled.");
     }
 
     private void Update()
@@ -41,7 +48,8 @@ public class PlayerInteraction : MonoBehaviour
         {
             TileBase lastTile = tilemap.GetTile(lastTilePosition);
 
-            // Replace the last tile if it was a modifiable tile
+
+            // Replace the last tile if it was modifiable
             if (lastTile == modifiableTile)
             {
                 tilemap.SetTile(lastTilePosition, replacementTile);
@@ -50,5 +58,19 @@ public class PlayerInteraction : MonoBehaviour
 
             lastTilePosition = currentTilePosition; // Update the last position
         }
+    }
+
+
+
+    public bool IsTileAllowed(TileBase tile)
+    {
+        AllowedTiles allowedTiles = GetComponent<AllowedTiles>();
+        if (allowedTiles == null)
+        {
+            Debug.LogError("AllowedTiles component not found on the GameObject!");
+            return false;
+        }
+
+        return allowedTiles.Contains(tile);
     }
 }
