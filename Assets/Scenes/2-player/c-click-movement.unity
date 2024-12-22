@@ -828,6 +828,7 @@ MonoBehaviour:
   speed: 10
   maxIterations: 10000
   uiMessageManager: {fileID: 1309227589}
+  uiPanel: {fileID: 0}
   atTarget: 1
   moveTo:
     m_Name: Move To
@@ -881,6 +882,7 @@ MonoBehaviour:
   speed: 2
   maxIterations: 1000
   uiMessageManager: {fileID: 1309227589}
+  uiPanel: {fileID: 0}
   atTarget: 1
 --- !u!1 &898172269
 GameObject:
@@ -3141,8 +3143,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 15.6004, y: -10}
+  m_SizeDelta: {x: -174.6234, y: -181.8244}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1250482208
 MonoBehaviour:
@@ -3498,9 +3500,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 912351858}
   - {fileID: 536966466}
   - {fileID: 790962201}
-  - {fileID: 912351858}
   - {fileID: 1309227588}
   - {fileID: 994434509}
   - {fileID: 898172270}

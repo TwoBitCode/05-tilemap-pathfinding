@@ -12,6 +12,7 @@ public class TargetMover : MonoBehaviour
     [SerializeField] private float speed = 2f;
     [SerializeField] private int maxIterations = 1000;
     [SerializeField] private UIMessageManager uiMessageManager;
+    [SerializeField] private GameObject uiPanel; // Reference to the UI panel (e.g., start panel)
 
     private Vector3 targetInWorld;
     private Vector3Int targetInGrid;
@@ -22,6 +23,12 @@ public class TargetMover : MonoBehaviour
 
     public void SetTarget(Vector3 newTarget)
     {
+        if (uiPanel != null && uiPanel.activeSelf)
+        {
+            Debug.Log("Click ignored because UI panel is active.");
+            return;
+        }
+
         if (IsClickOverUI())
         {
             Debug.Log("Click detected over UI. Ignoring...");
@@ -42,7 +49,6 @@ public class TargetMover : MonoBehaviour
 
         Vector3Int currentGridPosition = tilemap.WorldToCell(transform.position);
 
-        // Check if the target is the same as the current position
         if (gridPosition == currentGridPosition)
         {
             Debug.LogWarning("Invalid Target: You are already on this tile.");
@@ -72,12 +78,10 @@ public class TargetMover : MonoBehaviour
         StartCoroutine(MoveTowardsTheTarget());
     }
 
-
     public Vector3 GetTarget()
     {
         return targetInWorld;
     }
-
 
     private bool IsClickOverUI()
     {

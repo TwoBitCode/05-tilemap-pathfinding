@@ -62,20 +62,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\1-tiles\AllowedTiles.cs" />
+    <Compile Include="Assets\Scripts\5-Dijkstra\TargetMover.cs" />
     <Compile Include="Assets\Scripts\2-player\PlayerInteraction.cs" />
     <Compile Include="Assets\Scripts\3-enemies\Patroller.cs" />
-    <Compile Include="Assets\Scripts\2-player\ClickMover.cs" />
     <Compile Include="Assets\Scripts\5-Dijkstra\Dijkstra.cs" />
     <Compile Include="Assets\Scripts\2-player\StartGameManager.cs" />
+    <Compile Include="Assets\Scripts\5-Dijkstra\ClickMover.cs" />
     <Compile Include="Assets\Scripts\3-enemies\Cycle.cs" />
     <Compile Include="Assets\Scripts\1-tiles\ItemTileDetector.cs" />
     <Compile Include="Assets\Scripts\2-player\KeyboardMover.cs" />
-    <Compile Include="Assets\Scripts\2-player\TargetMover.cs" />
+    <Compile Include="Assets\Scripts\5-Dijkstra\DijkstraMovementManager.cs" />
     <Compile Include="Assets\Scripts\4-generation\TilemapCaveGenerator.cs" />
     <Compile Include="Assets\Scripts\5-Dijkstra\UIMessageManager.cs" />
     <Compile Include="Assets\Scripts\4-generation\CaveGenerator.cs" />
     <Compile Include="Assets\Scripts\1-tiles\TileWeightConfig.cs" />
-    <Compile Include="Assets\Scripts\2-player\DijkstraMovementManager.cs" />
     <Compile Include="Assets\Scripts\3-enemies\RadiusWatcher.cs" />
     <Compile Include="Assets\Scripts\4-generation\MeshRendererCaveGenerator.cs" />
     <Compile Include="Assets\Scripts\3-enemies\EnemyController.cs" />
