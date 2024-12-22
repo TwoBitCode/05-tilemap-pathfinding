@@ -2,28 +2,35 @@ using UnityEngine;
 
 public class DijkstraMovementManager : MonoBehaviour
 {
-    [SerializeField] private GameObject startGamePanel; // Start Game Panel
-    public static bool gameStarted = false; // Flag to track if the game has started
+    [SerializeField] private GameObject startGamePanel; // Reference to the start game panel
+    public static bool gameStarted = false; // Tracks if the game has started
+
+    // Constants for Time.timeScale values
+    private const float GAME_PAUSED = 0f;
+    private const float GAME_RUNNING = 1f;
 
     private void Start()
     {
-        // Show the Start Panel and pause the game
+        // Show the start panel at launch and prevent gameplay
         if (startGamePanel != null)
         {
             startGamePanel.SetActive(true);
         }
-        gameStarted = false; // Ensure the game is not started at launch
-        Time.timeScale = 0; // Pause the game
+        gameStarted = false; // Ensure gameplay interactions are initially disabled
+        Time.timeScale = GAME_PAUSED; // Pause the game
     }
 
     public void StartGame()
     {
-        // Hide the Start Panel and resume the game
-        if (startGamePanel != null)
+        if (startGamePanel == null)
         {
-            startGamePanel.SetActive(false);
+            Debug.LogWarning("Start game panel is not assigned!");
+            return;
         }
-        gameStarted = true; // Allow gameplay interactions
-        Time.timeScale = 1; // Resume the game
+
+        // Hide the start panel and enable gameplay
+        startGamePanel.SetActive(false);
+        gameStarted = true; // Mark the game as started
+        Time.timeScale = GAME_RUNNING; // Resume the game
     }
 }

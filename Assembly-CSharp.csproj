@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\1-tiles\AllowedTiles.cs" />
+    <Compile Include="Assets\Scripts\2-player\PlayerInteraction.cs" />
     <Compile Include="Assets\Scripts\3-enemies\Patroller.cs" />
     <Compile Include="Assets\Scripts\2-player\ClickMover.cs" />
     <Compile Include="Assets\Scripts\5-Dijkstra\Dijkstra.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Assets\Scripts\2-player\KeyboardMoverByTile.cs" />
     <Compile Include="Assets\Scripts\3-enemies\EnemyControllerStateMachine.cs" />
     <Compile Include="Assets\Scripts\1-tiles\TileLogger.cs" />
-    <Compile Include="Assets\Scripts\1-tiles\PlayerInteraction.cs" />
     <Compile Include="Assets\Scripts\5-Dijkstra\TilemapGraph.cs" />
     <Compile Include="Assets\Scripts\5-Dijkstra\IGraph.cs" />
     <Compile Include="Assets\Scripts\3-enemies\StateMachine.cs" />

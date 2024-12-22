@@ -22,8 +22,6 @@ public class TargetMover : MonoBehaviour
 
     public void SetTarget(Vector3 newTarget)
     {
-
-
         if (IsClickOverUI())
         {
             Debug.Log("Click detected over UI. Ignoring...");
@@ -35,6 +33,23 @@ public class TargetMover : MonoBehaviour
         if (!tilemap.HasTile(gridPosition))
         {
             Debug.LogWarning("Invalid Target: Clicked outside the tilemap.");
+            if (uiMessageManager != null)
+            {
+                uiMessageManager.ShowMessage("Invalid click! Please click on a valid tile.");
+            }
+            return;
+        }
+
+        Vector3Int currentGridPosition = tilemap.WorldToCell(transform.position);
+
+        // Check if the target is the same as the current position
+        if (gridPosition == currentGridPosition)
+        {
+            Debug.LogWarning("Invalid Target: You are already on this tile.");
+            if (uiMessageManager != null)
+            {
+                uiMessageManager.ShowMessage("Invalid target! You are already on this tile.");
+            }
             return;
         }
 
@@ -42,6 +57,10 @@ public class TargetMover : MonoBehaviour
         if (!allowedTiles.Contains(clickedTile))
         {
             Debug.LogWarning($"Invalid Target: Tile '{clickedTile?.name}' is not allowed.");
+            if (uiMessageManager != null)
+            {
+                uiMessageManager.ShowMessage($"Invalid tile: '{clickedTile?.name}'. Movement not allowed.");
+            }
             return;
         }
 
@@ -52,6 +71,7 @@ public class TargetMover : MonoBehaviour
         Debug.Log($"Valid target set to {gridPosition} ({clickedTile?.name}).");
         StartCoroutine(MoveTowardsTheTarget());
     }
+
 
     public Vector3 GetTarget()
     {
