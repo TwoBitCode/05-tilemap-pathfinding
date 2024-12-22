@@ -1,6 +1,6 @@
 # 🗺️ Tilemap Pathfinding Game
 
-This project demonstrates 2D scene construction using tilemaps and pathfinding algorithms in Unity. It builds on concepts from **Unity Week 5: Two-dimensional Scene-building and Pathfinding**, incorporating both **BFS** and **Dijkstra's algorithm** for navigation.
+This project demonstrates 2D scene construction using tilemaps and pathfinding algorithms in Unity. It builds on concepts from **Unity Week 5: Two-dimensional Scene-building and Pathfinding**.
 
 📖 **Foundational text explanations** are available [here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
 
